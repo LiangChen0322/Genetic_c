@@ -1,9 +1,9 @@
-/*
-用遗传算法求y=x*sin(10*pi*x)+2的最大值  -1=<x<=2
-精确到6位小数
-pow(2,21)<3*1000000<pow(2,22)
-编码的二进制长度为22 
-*/
+/************************************************************************
+ * 用遗传算法求y=x*sin(10*pi*x)+2的最大值  -1=<x<=2
+ * 精确到6位小数
+ * pow(2,21)<3*1000000<pow(2,22)
+ *编码的二进制长度为22 
+ ************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -35,7 +35,7 @@ double randd()
 }
 int randi(int k)
 {
-    return (int)(randd()*k+0.5);
+    return (int)( randd()*k + 0.5 );
 }
 
 //计算当前种群中各个个体的适应度 
@@ -45,29 +45,31 @@ void cal_fitness()
     double d;
     
     for ( i=0; i<SIZE; i++ ) {
-        k=0;
-        for(j=LEN-1;j>=0;j--) k=(k<<1)+cur[i].x[j];
-        d= (double)k/N*3 - 1;
+        k = 0;
+        for ( j=LEN-1; j>=0; j--) {   
+            k = (k<<1)+cur[i].x[j];
+        }
+        d = (double)k/N*3 - 1;
         //printf("%f, %f, %f\n", PI, d, cur[i].fitness);
         cur[i].fitness = d * sin( 10 * PI * d ) + 2 ;
-        cur[i].fitsum=i>0?(cur[i].fitness+cur[i-1].fitsum):(cur[0].fitness);
+        cur[i].fitsum = i>0?(cur[i].fitness+cur[i-1].fitsum):(cur[0].fitness);
     }
 }
 
 void init()
 {
-  int tmp;
-  int i;
-  int j;
+    int tmp;
+    int i;
+    int j;
   
-  for ( i=0; i<SIZE; i++ ) {
-    tmp=randi(N);
-    for( j=0; j<LEN; j++ ) {
-      cur[i].x[j]=tmp%2;
-      tmp=tmp>>1;
+    for ( i=0; i<SIZE; i++ ) {
+        tmp=randi(N);
+        for( j=0; j<LEN; j++ ) {
+            cur[i].x[j]=tmp%2;
+            tmp=tmp>>1;
+        }
     }
-  }
-  cal_fitness();
+    cal_fitness();
 }
 
 int sel()
@@ -75,9 +77,11 @@ int sel()
     double p=randd();
     double sum=cur[SIZE-1].fitsum;
     int i;
+    
     for ( i=0; i<SIZE; i++ ) {
-        if( cur[i].fitsum/sum>p ) 
+        if( cur[i].fitsum/sum>p ) {
             return i;
+        } 
     }
 }
 
