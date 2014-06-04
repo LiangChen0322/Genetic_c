@@ -88,71 +88,66 @@ int sel()
 //换代 
 void tran()
 {
-  int i,j,pos;
-  int k;
-  //找当前种群最优个体 
-  max=cur[0];
-  for(i=1;i<SIZE-1;i++)
-  {
-    if(cur[i].fitness>max.fitness)  max=cur[i];
-  }
-  for(k=0;k<SIZE;k+=2)
-  {
-    //选择交叉个体 
-    i=sel();
-    j=sel();
-    
-    //选择交叉位置 
-    pos=randi(LEN-1);
-    
-    //交叉
-    if(randd()<P_CORSS)
-    {
-      memcpy(next[k].x,cur[i].x,pos);
-      memcpy(next[k].x+pos,cur[j].x+pos,LEN-pos);
+    int i,j,pos;
+    int k;
+    //找当前种群最优个体 
+    max=cur[0];
+    for(i=1;i<SIZE-1;i++) {
+        if(cur[i].fitness>max.fitness) {
+            max=cur[i];
+        }
+    }
+    for(k=0;k<SIZE;k+=2) {
+        //选择交叉个体 
+        i=sel();
+        j=sel();
+        
+        //选择交叉位置 
+        pos=randi(LEN-1);
+        
+        //交叉
+        if(randd()<P_CORSS)
+        {
+          memcpy(next[k].x,cur[i].x,pos);
+          memcpy(next[k].x+pos,cur[j].x+pos,LEN-pos);
 
-      memcpy(next[k+1].x,cur[j].x,pos);
-      memcpy(next[k+1].x+pos,cur[i].x+pos,LEN-pos);
-    }
-    else
-    {
-      memcpy(next[k].x,cur[i].x,LEN);
-      memcpy(next[k+1].x,cur[j].x,LEN);
-    }
-    //变异
-    if(randd()<P_MUTATION)
-    {
-      pos=randi(LEN-1);
-      next[k].x[pos]^=next[k].x[pos];
+          memcpy(next[k+1].x,cur[j].x,pos);
+          memcpy(next[k+1].x+pos,cur[i].x+pos,LEN-pos);
+        } else {
+            memcpy(next[k].x,cur[i].x,LEN);
+            memcpy(next[k+1].x,cur[j].x,LEN);
+        }
+        //变异
+        if(randd()<P_MUTATION) {
+            pos=randi(LEN-1);
+            next[k].x[pos]^=next[k].x[pos];
 
-      pos=randi(LEN-1);
-      next[k+1].x[pos]^=next[k+1].x[pos];
+            pos=randi(LEN-1);
+            next[k+1].x[pos]^=next[k+1].x[pos];
+        }
     }
-  }
-  //找下一代的最差个体 
-  min=next[0],j=0;
-  
-  for(i=1;i<SIZE-1;i++)
-  {
-    if(next[i].fitness<min.fitness)  min=next[i],j=i;
-  }
-  //用上一代的最优个体替换下一代的最差个体
-  next[j]=max;
-  
-  memcpy(cur,next,sizeof(cur));
-   
-  
-  cal_fitness();
+    //找下一代的最差个体 
+    min=next[0],j=0;
+    
+    for(i=1;i<SIZE-1;i++) {
+        if(next[i].fitness<min.fitness)  min=next[i],j=i;
+    }
+    //用上一代的最优个体替换下一代的最差个体
+    next[j]=max;
+    
+    memcpy(cur,next,sizeof(cur));
+    
+    cal_fitness();
 }
 
 //打印个体适应度和二进制编码 
 void print(node tmp)
 {
-  int i;
-  printf("%.6lf",tmp.fitness);
-  
-  for(i=0;i<LEN;i++)  printf(" %d",tmp.x[i]);
-  printf("\n");
+    int i;
+    printf("%.6lf",tmp.fitness);
+    
+    for(i=0;i<LEN;i++)  printf(" %d",tmp.x[i]);
+    printf("\n");
 }
 
 //打印种群
@@ -175,20 +170,20 @@ void GA()
     
 //    printf("%.6lf\n",max.fitness);
 //    printcur();
-  }
-  ans=cur[0].fitness;
-  for(i=1;i<SIZE;i++) 
-  ans=MAX(ans,cur[i].fitness);
-  printf("%.6lf\n",ans);
+    }
+    ans=cur[0].fitness;
+    for(i=1;i<SIZE;i++) 
+    ans=MAX(ans,cur[i].fitness);
+    printf("%.6lf\n",ans);
 }
 
 int main()
 {
-  srand((unsigned)time(NULL));
-  
-  init();
-  GA();
-  
-  system("pause");
-  return 0;
+    srand((unsigned)time(NULL));
+    
+    init();
+    GA();
+    
+    system("pause");
+    return 0;
 }
