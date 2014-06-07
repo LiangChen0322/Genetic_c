@@ -92,24 +92,23 @@ void tran()
     int k;
     //找当前种群最优个体 
     max=cur[0];
-    for(i=1;i<SIZE-1;i++) {
-        if(cur[i].fitness>max.fitness) {
-            max=cur[i];
+    for( i=1; i<SIZE-1; i++ ) {
+        if ( cur[i].fitness>max.fitness ) {
+            max = cur[i];
         }
     }
-    for(k=0;k<SIZE;k+=2) {
+    for ( k=0; k<SIZE; k+=2 ) {
         //选择交叉个体 
-        i=sel();
-        j=sel();
+        i = sel();
+        j = sel();
         
         //选择交叉位置 
-        pos=randi(LEN-1);
+        pos = randi(LEN-1);
         
         //交叉
-        if(randd()<P_CORSS)
-        {
-          memcpy(next[k].x,cur[i].x,pos);
-          memcpy(next[k].x+pos,cur[j].x+pos,LEN-pos);
+        if ( randd()<P_CORSS ) {
+          memcpy(next[k].x, cur[i].x, pos);
+          memcpy(next[k].x+pos, cur[j].x+pos, LEN-pos);
 
           memcpy(next[k+1].x,cur[j].x,pos);
           memcpy(next[k+1].x+pos,cur[i].x+pos,LEN-pos);
@@ -144,9 +143,11 @@ void tran()
 void print(node tmp)
 {
     int i;
-    printf("%.6lf",tmp.fitness);
+    printf("%.6lf", tmp.fitness);
     
-    for(i=0;i<LEN;i++)  printf(" %d",tmp.x[i]);
+    for ( i=0; i<LEN; i++ ) {
+        printf(" %d",tmp.x[i]);
+    }
     printf("\n");
 }
 
@@ -154,8 +155,10 @@ void print(node tmp)
 void printcur()
 {
     int i;
-    for(i=0;i<SIZE;i++) print(cur[i]);
-} 
+    for ( i=0; i<SIZE; i++ ) { 
+        print(cur[i]);
+    }
+}
 
 
 void GA()
@@ -164,17 +167,16 @@ void GA()
     double ans;
     int i;
     
-    while(cnt++<MAXGEN)
-    {
-        tran();
-    
+    while ( cnt++<MAXGEN ) {
+        tran(); 
 //    printf("%.6lf\n",max.fitness);
 //    printcur();
     }
-    ans=cur[0].fitness;
-    for(i=1;i<SIZE;i++) 
-    ans=MAX(ans,cur[i].fitness);
-    printf("%.6lf\n",ans);
+    ans = cur[0].fitness;
+    for( i=1; i<SIZE; i++ ) {
+        ans = MAX(ans,cur[i].fitness);
+    }
+    printf("%.6lf\n", ans);
 }
 
 int main()
