@@ -1,0 +1,9 @@
+y = x*sin(10*pi*x)+2   -1= < x < 2
+RNG seed: 45890     population: 32	    genetation: 2   x=1.848920 y=3.847856
+RNG seed: 45890     population: 64	    genetation: 5   x=1.852360 y=3.847271
+RNG seed: 10593     population: 32	    genetation: 2   x=1.859420 y=3.778589
+
+y = (x^2+x)*cos(x)/400000+3200      3000 < x < 5000
+RNG seed: 45890     population: 32	    genetation: 2   x=65565 y=13939
+RNG seed: 45890     population: 64	    genetation: 2   x=65722 y=13923
+RNG seed: 10593     population: 32	    genetation: 3   x=65320 y=13866
