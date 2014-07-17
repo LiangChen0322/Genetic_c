@@ -1,6 +1,5 @@
 /************************************************************************
- * 用遗传算法求y=x*sin(10*pi*x)+2的最大值  -1=<x<=2
- * test #1 (x^2+x)*cos(x)/400000+3200
+ * 
  * pow(2,10)<1024*2<pow(2,11)
  * 编码的二进制长度为22 
  ************************************************************************/
@@ -10,17 +9,17 @@
 #include <time.h>
 #include "math.h"
 
-#define N 2000               // 分解取值范围，精确到小数点后4位
-#define PI 3.14159265
-#define MAX(a,b) ((a)>(b)?(a):(b))
+#define N 200                   // 分解取值范围，精确到小数点后4位
+#define MAX(a, b)   ((a)>(b)?(a):(b))
+#define MIN(a, b)   ((a)<(b)?(a):(b))
 
-#define SIZE        32          // population
-#define MAXGEN      3           //
+#define SIZE        30          // population
+#define MAXGEN      1500        //
 #define SEED        10593       // initial GNG seed 
 #define P_CORSS     0.75
 #define P_MUTATION  0.05
 
-#define LEN 11          // 数据位数,也就是基因位数
+#define LEN 8           // 数据位数,也就是基因位数
 #define randd()         ((double)rand() /RAND_MAX)
 #define randi(k)        ((int)(randd() *k +0.5))
 
@@ -30,8 +29,8 @@
 typedef struct node
 {
     char    x[LEN];         //
-    double  fitness;        //
-    double  fitsum;         // 
+    long    fitness;        //
+    long    fitsum;         // 
 }node;
 
 node cur[SIZE], next[SIZE], max, min;
@@ -39,29 +38,30 @@ node cur[SIZE], next[SIZE], max, min;
 int gen_cnt;                // 迭代次数
 
 /****************************************************************************
- * 计算当前种群中各个个体的适应度
+ * Calculate fitness of 
  ****************************************************************************/
 void cal_fitness()
 {
-    int i, j;
-    long k;
-    double d;
+    int     i, j;
+    int     k;
+    long    d;
     
-    for ( i=0; i<SIZE; i++ ) {
+    for ( i=0,d=0; i<SIZE; i++ ) {
         k = 0;
-        for ( j=LEN-1; j>=0; j--) {   
+        for ( j=LEN-1; j>=0; j-- ) {   
             k = (k<<1)+cur[i].x[j];
         }
-        d = (double)k+64000;
-        cur[i].fitness = ((d*d +d) * cos(d) /400000) +3200;
+        k = k - 100;
+        d += k*k;
+        cur[i].fitness = d;
         cur[i].fitsum = i>0?(cur[i].fitness+cur[i-1].fitsum):(cur[0].fitness);
     }
 }
 
 /*****************************************************************************
- * 种群初始化
+ * Population initial
  *****************************************************************************/
-void init()
+void population_init()
 {
     int tmp;
     int i;
@@ -98,18 +98,18 @@ void tran()
     int i, j, pos;
     int k;
     //找当前种群最优个体 
-    max=cur[0];
+    min = cur[0];
     for ( i=1; i<SIZE-1; i++ ) {
-        if ( cur[i].fitness>max.fitness ) {
-            max = cur[i];
+        if ( cur[i].fitness<min.fitness ) {
+            min = cur[i];
         }
     }
     for ( k=0; k<SIZE; k+=2 ) {
-        //选择交叉个体 
+        // 选择交叉个体 
         i = sel();
         j = sel();
         
-        //选择交叉位置 
+        // 选择交叉位置 
         pos = randi(LEN-1);
         
         //交叉
@@ -124,24 +124,25 @@ void tran()
         }
         //变异
         if ( randd()<P_MUTATION ) {
-            pos=randi(LEN-1);
-            next[k].x[pos]^=next[k].x[pos];
+            pos = randi(LEN-1);
+            next[k].x[pos] ^= next[k].x[pos];
          
             pos = randi(LEN-1);
             next[k+1].x[pos] ^= next[k+1].x[pos];
         }
     }
     //找下一代的最差个体 
-    min = next[0];
+    max = next[0];
     j = 0;
     
     for ( i=1; i<SIZE-1; i++ ) {
         if ( next[i].fitness<min.fitness ) {
-            min=next[i],j=i;
+            max = next[i];
+            j = i;
         }
     }
     //用上一代的最优个体替换下一代的最差个体
-    next[j] = max;
+    next[j] = min;
     
     memcpy(cur, next, sizeof(cur));
     
@@ -152,10 +153,10 @@ void tran()
 void print(node tmp)
 {
     int i;
-    printf("%.6lf", tmp.fitness);
+    printf("%8ld:", tmp.fitness);
     
     for ( i=0; i<LEN; i++ ) {
-        printf(" %d",tmp.x[i]);
+        printf("%2d",tmp.x[i]);
     }
     printf("\n");
 }
@@ -172,11 +173,11 @@ void printcur()
 
 void GA()
 {
-    int cnt=0;
-    long k;
-    double ans;
-    double val;
-    int i, j;
+    int     cnt=0;
+    long    k;
+    long    ans;
+    long    val;
+    int     i, j;
     
     while ( cnt++<MAXGEN ) {
         tran(); 
@@ -187,7 +188,7 @@ void GA()
     cnt = 0;
 #if 0
     for( i=1; i<SIZE; i++ ) {
-        ans = MAX(ans,cur[i].fitness);
+        ans = MIN(ans, cur[i].fitness);
     }
     printf("%.6lf\n", ans);
 #else
@@ -201,10 +202,9 @@ void GA()
     for ( j=LEN-1; j>=0; j--) {   
         k = (k<<1)+cur[cnt].x[j];
     }
-    k += 64000;
-    printf("%6ld, %.6lf\n", k, ans);
+    k -= 100;
+    printf("%8ld, %8ld\n", k, ans);
 #endif
-
 }
 
 int main()
@@ -212,7 +212,7 @@ int main()
     //srand((unsigned)time(NULL));
     srand(SEED);
     
-    init();
+    population_init();
     GA();
     
     system("pause");
