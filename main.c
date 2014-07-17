@@ -51,9 +51,8 @@ void cal_fitness()
         for ( j=LEN-1; j>=0; j-- ) {   
             k = (k<<1)+cur[i].x[j];
         }
-        k = k - 100;
-        d += k*k;
-        cur[i].fitness = d;
+        k = (k<100?(100-k):(k-100));
+        cur[i].fitness = k*k;
         cur[i].fitsum = i>0?(cur[i].fitness+cur[i-1].fitsum):(cur[0].fitness);
     }
 }
